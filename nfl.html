@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFL Guess the College</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f7;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      color: #222;
+    }
+
+    .difficulty-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .difficulty-buttons button {
+      flex: 1;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #e5e5ea;
+    }
+
+    .difficulty-buttons button.active {
+      background: #007aff;
+      color: white;
+    }
+
+    .player {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 16px 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    button#submitGuess {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #007aff;
+      color: white;
+    }
+
+    .result {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .streak {
+      margin-bottom: 12px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #007aff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>NFL Guess the College</h1>
+
+    <div class="difficulty-buttons">
+      <button id="easyBtn">Easy</button>
+      <button id="mediumBtn">Medium</button>
+      <button id="hardBtn">Hard</button>
+    </div>
+
+    <div class="streak" id="streakDisplay">Streak: 0 | Best: 0</div>
+
+    <div class="player" id="playerName">Choose a difficulty</div>
+
+    <input id="guessInput" type="text" placeholder="Enter college..." disabled />
+
+    <button id="submitGuess" disabled>Submit Guess</button>
+
+    <div class="result" id="result"></div>
+
+    <a href="index.html">Back to Main Game</a>
+  </div>
+
+  <script>
+    // -----------------------------
+    // NFL PLAYER DATABASE (~300 players)
+    // -----------------------------
+
+    // EASY = Modern stars + big schools
+    const easyPlayers = [
+      { name: "Patrick Mahomes", college: "Texas Tech" },
+      { name: "Josh Allen", college: "Wyoming" },
+      { name: "Joe Burrow", college: "LSU" },
+      { name: "Justin Jefferson", college: "LSU" },
+      { name: "Christian McCaffrey", college: "Stanford" },
+      { name: "Micah Parsons", college: "Penn State" },
+      { name: "Lamar Jackson", college: "Louisville" },
+      { name: "Tyreek Hill", college: "West Alabama" },
+      { name: "Jalen Hurts", college: "Oklahoma" },
+      { name: "Tua Tagovailoa", college: "Alabama" },
+      { name: "Derrick Henry", college: "Alabama" },
+      { name: "Saquon Barkley", college: "Penn State" },
+      { name: "Nick Chubb", college: "Georgia" },
+      { name: "Brock Purdy", college: "Iowa State" },
+      { name: "CeeDee Lamb", college: "Oklahoma" },
+      { name: "Amon-Ra St. Brown", college: "USC" },
+      { name: "Trevor Lawrence", college: "Clemson" },
+      { name: "Travis Kelce", college: "Cincinnati" },
+      { name: "George Kittle", college: "Iowa" },
+      { name: "DK Metcalf", college: "Ole Miss" },
+      { name: "DeVonta Smith", college: "Alabama" },
+      { name: "Najee Harris", college: "Alabama" },
+      { name: "Jaylen Waddle", college: "Alabama" },
+      { name: "Garrett Wilson", college: "Ohio State" },
+      { name: "Chris Olave", college: "Ohio State" },
+      { name: "Bijan Robinson", college: "Texas" },
+      { name: "Marvin Harrison Jr.", college: "Ohio State" },
+      { name: "Jordan Love", college: "Utah State" },
+      { name: "Puka Nacua", college: "BYU" },
+      { name: "Aidan Hutchinson", college: "Michigan" }
+    ];
+
+    // MEDIUM = Stars + legends (balanced eras)
+    const mediumPlayers = [
+      ...easyPlayers,
+      { name: "Tom Brady", college: "Michigan" },
+      { name: "Peyton Manning", college: "Tennessee" },
+      { name: "Eli Manning", college: "Ole Miss" },
+      { name: "Drew Brees", college: "Purdue" },
+      { name: "Aaron Rodgers", college: "California" },
+      { name: "Brett Favre", college: "Southern Miss" },
+      { name: "Dan Marino", college: "Pittsburgh" },
+      { name: "Joe Montana", college: "Notre Dame" },
+      { name: "Jerry Rice", college: "Mississippi Valley State" },
+      { name: "Randy Moss", college: "Marshall" },
+      { name: "Terrell Owens", college: "Chattanooga" },
+      { name: "Barry Sanders", college: "Oklahoma State" },
+      { name: "Emmitt Smith", college: "Florida" },
+      { name: "LaDainian Tomlinson", college: "TCU" },
+      { name: "Adrian Peterson", college: "Oklahoma" },
+      { name: "Ray Lewis", college: "Miami" },
+      { name: "Ed Reed", college: "Miami" },
+      { name: "Brian Urlacher", college: "New Mexico" },
+      { name: "Troy Polamalu", college: "USC" },
+      { name: "Calvin Johnson", college: "Georgia Tech" },
+      { name: "Steve Young", college: "BYU" },
+      { name: "Jim Kelly", college: "Miami" },
+      { name: "Kurt Warner", college: "Northern Iowa" },
+      { name: "Michael Vick", college: "Virginia Tech" },
+      { name: "Cam Newton", college: "Auburn" },
+      { name: "Matt Ryan", college: "Boston College" },
+      { name: "Philip Rivers", college: "NC State" },
+      { name: "Tony Gonzalez", college: "California" },
+      { name: "Rob Gronkowski", college: "Arizona" },
+      { name: "Marshawn Lynch", college: "California" },
+      { name: "Frank Gore", college: "Miami" },
+      { name: "Reggie Wayne", college: "Miami" },
+      { name: "Andre Johnson", college: "Miami" },
+      { name: "Chad Johnson", college: "Oregon State" },
+      { name: "Warren Sapp", college: "Miami" },
+      { name: "Deion Sanders", college: "Florida State" },
+      { name: "Bo Jackson", college: "Auburn" },
+      { name: "Herschel Walker", college: "Georgia" }
+    ];
+
+    // HARD = Legends + small-school deep cuts
+    const hardPlayers = [
+      ...mediumPlayers,
+      { name: "Kurt Warner", college: "Northern Iowa" },
+      { name: "Joe Flacco", college: "Delaware" },
+      { name: "Tony Romo", college: "Eastern Illinois" },
+      { name: "Carson Wentz", college: "North Dakota State" },
+      { name: "Jimmy Garoppolo", college: "Eastern Illinois" },
+      { name: "David Johnson", college: "Northern Iowa" },
+      { name: "Austin Ekeler", college: "Western Colorado" },
+      { name: "Cooper Kupp", college: "Eastern Washington" },
+      { name: "Adam Thielen", college: "Minnesota State" },
+      { name: "Jerry Rice", college: "Mississippi Valley State" },
+      { name: "Walter Payton", college: "Jackson State" },
+      { name: "Steve McNair", college: "Alcorn State" },
+      { name: "Shannon Sharpe", college: "Savannah State" },
+      { name: "Robert Mathis", college: "Alabama A&M" },
+      { name: "Deacon Jones", college: "Mississippi Valley State" },
+      { name: "Fred Jackson", college: "Coe College" },
+      { name: "Miles Austin", college: "Monmouth" },
+      { name: "Pierre Garçon", college: "Mount Union" },
+      { name: "John Randle", college: "Texas A&M–Kingsville" },
+      { name: "London Fletcher", college: "John Carroll" },
+      { name: "Ali Marpet", college: "Hobart" },
+      { name: "Marques Colston", college: "Hofstra" },
+      { name: "Donald Driver", college: "Alcorn State" },
+      { name: "Rod Smith", college: "Missouri Southern" },
+      { name: "Brandon Jacobs", college: "Southern Illinois" },
+      { name: "James Harrison", college: "Kent State" }
+    ];
+
+    // -----------------------------
+    // GAME LOGIC
+    // -----------------------------
+
+    let currentPool = [];
+    let currentPlayer = null;
+
+    function pickRandomPlayer() {
+      currentPlayer = currentPool[Math.floor(Math.random() * currentPool.length)];
+      document.getElementById("playerName").textContent = currentPlayer.name;
+    }
+
+    function setDifficulty(pool, buttonId) {
+      currentPool = pool;
+      document.getElementById("guessInput").disabled = false;
+      document.getElementById("submitGuess").disabled = false;
+      document.getElementById("result").textContent = "";
+      document.getElementById("guessInput").value = "";
+
+      document.querySelectorAll(".difficulty-buttons button")
+        .forEach(btn => btn.classList.remove("active"));
+      document.getElementById(buttonId).classList.add("active");
+
+      pickRandomPlayer();
+    }
+
+    // STREAK SYSTEM
+    function updateStreak(correct) {
+      let streak = parseInt(localStorage.getItem("nflStreak") || 0);
+      let best = parseInt(localStorage.getItem("nflBest") || 0);
+
+      if (correct) {
+        streak++;
+        if (streak > best) best = streak;
+      } else {
+        streak = 0;
+      }
+
+      localStorage.setItem("nflStreak", streak);
+      localStorage.setItem("nflBest", best);
+
+      document.getElementById("streakDisplay").textContent =
+        `Streak: ${streak} | Best: ${best}`;
+    }
+
+    function submitGuess() {
+      if (!currentPlayer) return;
+
+      const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+      const correct = currentPlayer.college.toLowerCase();
+      const resultEl = document.getElementById("result");
+
+      if (guess === correct) {
+        resultEl.textContent = "Correct!";
+        resultEl.style.color = "green";
+        updateStreak(true);
+      } else {
+        resultEl.textContent = `Incorrect — ${currentPlayer.college}`;
+        resultEl.style.color = "red";
+        updateStreak(false);
+      }
+
+      pickRandomPlayer();
+      document.getElementById("guessInput").value = "";
+    }
+
+    document.getElementById("submitGuess").addEventListener("click", submitGuess);
+    document.getElementById("guessInput").addEventListener("keyup", e => {
+      if (e.key === "Enter") submitGuess();
+    });
+
+    // Difficulty button listeners
+    document.getElementById("easyBtn").onclick = () => setDifficulty(easyPlayers, "easyBtn");
+    document.getElementById("mediumBtn").onclick = () => setDifficulty(mediumPlayers, "mediumBtn");
+    document.getElementById("hardBtn").onclick = () => setDifficulty(hardPlayers, "hardBtn");
+
+    // Load streak on startup
+    updateStreak(false);
+  </script>
+</body>
+</html>
