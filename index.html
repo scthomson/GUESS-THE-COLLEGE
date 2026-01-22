@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>NBA College Guess</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
+    button { padding: 8px 16px; margin-top: 8px; }
+    input { padding: 6px; width: 100%; max-width: 300px; }
+    .player { font-size: 1.4rem; margin: 16px 0; }
+    .result { margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Guess the NBA Player's College</h1>
+
+  <div class="player" id="playerName">Click "New Player" to start</div>
+
+  <input id="guessInput" type="text" placeholder="Enter college..." />
+  <br />
+  <button id="submitGuess">Submit Guess</button>
+  <button id="newPlayer">New Player</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    const players = [
+      { name: "LeBron James", college: "None" },
+      { name: "Stephen Curry", college: "Davidson" },
+      { name: "Kevin Durant", college: "Texas" },
+      { name: "Kyrie Irving", college: "Duke" },
+      { name: "Anthony Davis", college: "Kentucky" },
+      { name: "Damian Lillard", college: "Weber State" },
+      { name: "Kawhi Leonard", college: "San Diego State" },
+      { name: "James Harden", college: "Arizona State" },
+      { name: "Jayson Tatum", college: "Duke" },
+      { name: "Joel Embiid", college: "Kansas" }
+      // add as many as you want
+    ];
+
+    let currentPlayer = null;
+
+    function newPlayer() {
+      const randomIndex = Math.floor(Math.random() * players.length);
+      currentPlayer = players[randomIndex];
+      document.getElementById("playerName").textContent = currentPlayer.name;
+      document.getElementById("result").textContent = "";
+      document.getElementById("guessInput").value = "";
+      document.getElementById("guessInput").focus();
+    }
+
+    function checkGuess() {
+      if (!currentPlayer) return;
+      const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+      const correct = currentPlayer.college.toLowerCase();
+      const resultEl = document.getElementById("result");
+
+      if (guess === correct) {
+        resultEl.textContent = "Correct! 🎯";
+        resultEl.style.color = "green";
+      } else {
+        resultEl.textContent = `Nope. Correct answer: ${currentPlayer.college}`;
+        resultEl.style.color = "red";
+      }
+    }
+
+    document.getElementById("newPlayer").addEventListener("click", newPlayer);
+    document.getElementById("submitGuess").addEventListener("click", checkGuess);
+    document.getElementById("guessInput").addEventListener("keyup", (e) => {
+      if (e.key === "Enter") checkGuess();
+    });
+  </script>
+</body>
+</html>
