@@ -1,120 +1,215 @@
-<script>
-  const players = [
-    { name: "LeBron James", college: "None" },
-    { name: "Stephen Curry", college: "Davidson" },
-    { name: "Kevin Durant", college: "Texas" },
-    { name: "Kyrie Irving", college: "Duke" },
-    { name: "Anthony Davis", college: "Kentucky" },
-    { name: "Damian Lillard", college: "Weber State" },
-    { name: "Kawhi Leonard", college: "San Diego State" },
-    { name: "James Harden", college: "Arizona State" },
-    { name: "Jayson Tatum", college: "Duke" },
-    { name: "Joel Embiid", college: "Kansas" },
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBA College Guess</title>
 
-    // Current stars
-    { name: "Luka Doncic", college: "None" },
-    { name: "Nikola Jokic", college: "None" },
-    { name: "Giannis Antetokounmpo", college: "None" },
-    { name: "Shai Gilgeous-Alexander", college: "Kentucky" },
-    { name: "Devin Booker", college: "Kentucky" },
-    { name: "Trae Young", college: "Oklahoma" },
-    { name: "Zion Williamson", college: "Duke" },
-    { name: "Ja Morant", college: "Murray State" },
-    { name: "LaMelo Ball", college: "None" },
-    { name: "Jimmy Butler", college: "Marquette" },
-
-    // Legends
-    { name: "Michael Jordan", college: "North Carolina" },
-    { name: "Kobe Bryant", college: "None" },
-    { name: "Shaquille O'Neal", college: "LSU" },
-    { name: "Tim Duncan", college: "Wake Forest" },
-    { name: "Larry Bird", college: "Indiana State" },
-    { name: "Magic Johnson", college: "Michigan State" },
-    { name: "Charles Barkley", college: "Auburn" },
-    { name: "Allen Iverson", college: "Georgetown" },
-    { name: "Dwyane Wade", college: "Marquette" },
-    { name: "Carmelo Anthony", college: "Syracuse" },
-
-    // Deep cuts
-    { name: "CJ McCollum", college: "Lehigh" },
-    { name: "Paul George", college: "Fresno State" },
-    { name: "Klay Thompson", college: "Washington State" },
-    { name: "Draymond Green", college: "Michigan State" },
-    { name: "Pascal Siakam", college: "New Mexico State" },
-    { name: "Fred VanVleet", college: "Wichita State" },
-    { name: "Buddy Hield", college: "Oklahoma" },
-    { name: "Khris Middleton", college: "Texas A&M" },
-    { name: "DeMar DeRozan", college: "USC" },
-    { name: "Russell Westbrook", college: "UCLA" },
-
-    // Tough ones
-    { name: "Duncan Robinson", college: "Michigan" },
-    { name: "Malcolm Brogdon", college: "Virginia" },
-    { name: "Jalen Brunson", college: "Villanova" },
-    { name: "Mikal Bridges", college: "Villanova" },
-    { name: "Domantas Sabonis", college: "Gonzaga" },
-    { name: "Rudy Gobert", college: "None" },
-    { name: "Victor Wembanyama", college: "None" },
-    { name: "Chet Holmgren", college: "Gonzaga" },
-    { name: "Brandon Ingram", college: "Duke" },
-    { name: "Karl-Anthony Towns", college: "Kentucky" }
-  ];
-
-  let currentPlayer = null;
-  let streak = 0;
-  let bestStreak = 0;
-
-  function updateStreakDisplay() {
-    document.getElementById("streakDisplay").textContent =
-      `Streak: ${streak} | Best: ${bestStreak}`;
-  }
-
-  function newPlayer() {
-    const randomIndex = Math.floor(Math.random() * players.length);
-    currentPlayer = players[randomIndex];
-    document.getElementById("playerName").textContent = currentPlayer.name;
-    document.getElementById("result").textContent = "";
-    document.getElementById("guessInput").value = "";
-    document.getElementById("guessInput").focus();
-  }
-
-  function checkGuess() {
-    if (!currentPlayer) return;
-
-    const guess = document.getElementById("guessInput").value.trim().toLowerCase();
-    const correct = currentPlayer.college.toLowerCase();
-    const resultEl = document.getElementById("result");
-
-    if (guess === correct) {
-      resultEl.textContent = "Correct!";
-      resultEl.style.color = "green";
-
-      streak++;
-      if (streak > bestStreak) bestStreak = streak;
-
-    } else {
-      resultEl.textContent = `Correct answer: ${currentPlayer.college}`;
-      resultEl.style.color = "red";
-      streak = 0;
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f7;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: #222;
+    }
+
+    .player {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin: 16px 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #submitGuess {
+      background: #007aff;
+      color: white;
+    }
+
+    #newPlayer {
+      background: #e5e5ea;
+      color: #333;
+    }
+
+    .result {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>Guess the NBA Player's College</h1>
+
+    <div id="streakDisplay" style="margin-bottom: 12px; font-weight: bold; color: #555;">
+      Streak: 0 | Best: 0
+    </div>
+
+    <div class="player" id="playerName">Loading...</div>
+
+    <input id="guessInput" type="text" placeholder="Enter college..." />
+
+    <button id="submitGuess">Submit Guess</button>
+    <button id="newPlayer">New Player</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const players = [
+      { name: "LeBron James", college: "None" },
+      { name: "Stephen Curry", college: "Davidson" },
+      { name: "Kevin Durant", college: "Texas" },
+      { name: "Kyrie Irving", college: "Duke" },
+      { name: "Anthony Davis", college: "Kentucky" },
+      { name: "Damian Lillard", college: "Weber State" },
+      { name: "Kawhi Leonard", college: "San Diego State" },
+      { name: "James Harden", college: "Arizona State" },
+      { name: "Jayson Tatum", college: "Duke" },
+      { name: "Joel Embiid", college: "Kansas" },
+
+      // Current stars
+      { name: "Luka Doncic", college: "None" },
+      { name: "Nikola Jokic", college: "None" },
+      { name: "Giannis Antetokounmpo", college: "None" },
+      { name: "Shai Gilgeous-Alexander", college: "Kentucky" },
+      { name: "Devin Booker", college: "Kentucky" },
+      { name: "Trae Young", college: "Oklahoma" },
+      { name: "Zion Williamson", college: "Duke" },
+      { name: "Ja Morant", college: "Murray State" },
+      { name: "LaMelo Ball", college: "None" },
+      { name: "Jimmy Butler", college: "Marquette" },
+
+      // Legends
+      { name: "Michael Jordan", college: "North Carolina" },
+      { name: "Kobe Bryant", college: "None" },
+      { name: "Shaquille O'Neal", college: "LSU" },
+      { name: "Tim Duncan", college: "Wake Forest" },
+      { name: "Larry Bird", college: "Indiana State" },
+      { name: "Magic Johnson", college: "Michigan State" },
+      { name: "Charles Barkley", college: "Auburn" },
+      { name: "Allen Iverson", college: "Georgetown" },
+      { name: "Dwyane Wade", college: "Marquette" },
+      { name: "Carmelo Anthony", college: "Syracuse" },
+
+      // Deep cuts
+      { name: "CJ McCollum", college: "Lehigh" },
+      { name: "Paul George", college: "Fresno State" },
+      { name: "Klay Thompson", college: "Washington State" },
+      { name: "Draymond Green", college: "Michigan State" },
+      { name: "Pascal Siakam", college: "New Mexico State" },
+      { name: "Fred VanVleet", college: "Wichita State" },
+      { name: "Buddy Hield", college: "Oklahoma" },
+      { name: "Khris Middleton", college: "Texas A&M" },
+      { name: "DeMar DeRozan", college: "USC" },
+      { name: "Russell Westbrook", college: "UCLA" },
+
+      // Tough ones
+      { name: "Duncan Robinson", college: "Michigan" },
+      { name: "Malcolm Brogdon", college: "Virginia" },
+      { name: "Jalen Brunson", college: "Villanova" },
+      { name: "Mikal Bridges", college: "Villanova" },
+      { name: "Domantas Sabonis", college: "Gonzaga" },
+      { name: "Rudy Gobert", college: "None" },
+      { name: "Victor Wembanyama", college: "None" },
+      { name: "Chet Holmgren", college: "Gonzaga" },
+      { name: "Brandon Ingram", college: "Duke" },
+      { name: "Karl-Anthony Towns", college: "Kentucky" }
+    ];
+
+    let currentPlayer = null;
+    let streak = 0;
+    let bestStreak = 0;
+
+    function updateStreakDisplay() {
+      document.getElementById("streakDisplay").textContent =
+        `Streak: ${streak} | Best: ${bestStreak}`;
+    }
+
+    function newPlayer() {
+      const randomIndex = Math.floor(Math.random() * players.length);
+      currentPlayer = players[randomIndex];
+      document.getElementById("playerName").textContent = currentPlayer.name;
+      document.getElementById("result").textContent = "";
+      document.getElementById("guessInput").value = "";
+      document.getElementById("guessInput").focus();
+    }
+
+    function checkGuess() {
+      if (!currentPlayer) return;
+
+      const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+      const correct = currentPlayer.college.toLowerCase();
+      const resultEl = document.getElementById("result");
+
+      if (guess === correct) {
+        resultEl.textContent = "Correct!";
+        resultEl.style.color = "green";
+
+        streak++;
+        if (streak > bestStreak) bestStreak = streak;
+
+      } else {
+        resultEl.textContent = `Correct answer: ${currentPlayer.college}`;
+        resultEl.style.color = "red";
+        streak = 0;
+      }
+
+      updateStreakDisplay();
+
+      // Auto-load next player after 1.2 seconds
+      setTimeout(newPlayer, 1200);
+    }
+
+    document.getElementById("newPlayer").addEventListener("click", newPlayer);
+    document.getElementById("submitGuess").addEventListener("click", checkGuess);
+    document.getElementById("guessInput").addEventListener("keyup", (e) => {
+      if (e.key === "Enter") checkGuess();
+    });
+
+    // Load first player immediately
+    newPlayer();
     updateStreakDisplay();
-
-    // ⭐ Automatically load next player after 1.2 seconds
-    setTimeout(newPlayer, 1200);
-  }
-
-  document.getElementById("newPlayer").addEventListener("click", newPlayer);
-  document.getElementById("submitGuess").addEventListener("click", checkGuess);
-  document.getElementById("guessInput").addEventListener("keyup", (e) => {
-    if (e.key === "Enter") checkGuess();
-  });
-
-  // ⭐ Load a player immediately when the page opens
-  newPlayer();
-  updateStreakDisplay();
-</script>
+  </script>
 </body>
 </html>
-
-   
