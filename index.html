@@ -29,7 +29,7 @@
 
     h1 {
       font-size: 1.6rem;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       color: #222;
     }
 
@@ -81,9 +81,9 @@
   <div class="card">
     <h1>Guess the NBA Player's College</h1>
 
-<div id="streakDisplay" style="margin-bottom: 12px; font-weight: bold; color: #555;">
-  Streak: 0 | Best: 0
-</div>
+    <div id="streakDisplay" style="margin-bottom: 12px; font-weight: bold; color: #555;">
+      Streak: 0 | Best: 0
+    </div>
 
     <div class="player" id="playerName">Click "New Player" to start</div>
 
@@ -106,10 +106,65 @@
       { name: "Kawhi Leonard", college: "San Diego State" },
       { name: "James Harden", college: "Arizona State" },
       { name: "Jayson Tatum", college: "Duke" },
-      { name: "Joel Embiid", college: "Kansas" }
+      { name: "Joel Embiid", college: "Kansas" },
+
+      // Current stars
+      { name: "Luka Doncic", college: "None" },
+      { name: "Nikola Jokic", college: "None" },
+      { name: "Giannis Antetokounmpo", college: "None" },
+      { name: "Shai Gilgeous-Alexander", college: "Kentucky" },
+      { name: "Devin Booker", college: "Kentucky" },
+      { name: "Trae Young", college: "Oklahoma" },
+      { name: "Zion Williamson", college: "Duke" },
+      { name: "Ja Morant", college: "Murray State" },
+      { name: "LaMelo Ball", college: "None" },
+      { name: "Jimmy Butler", college: "Marquette" },
+
+      // Legends
+      { name: "Michael Jordan", college: "North Carolina" },
+      { name: "Kobe Bryant", college: "None" },
+      { name: "Shaquille O'Neal", college: "LSU" },
+      { name: "Tim Duncan", college: "Wake Forest" },
+      { name: "Larry Bird", college: "Indiana State" },
+      { name: "Magic Johnson", college: "Michigan State" },
+      { name: "Charles Barkley", college: "Auburn" },
+      { name: "Allen Iverson", college: "Georgetown" },
+      { name: "Dwyane Wade", college: "Marquette" },
+      { name: "Carmelo Anthony", college: "Syracuse" },
+
+      // Deep cuts
+      { name: "CJ McCollum", college: "Lehigh" },
+      { name: "Paul George", college: "Fresno State" },
+      { name: "Klay Thompson", college: "Washington State" },
+      { name: "Draymond Green", college: "Michigan State" },
+      { name: "Pascal Siakam", college: "New Mexico State" },
+      { name: "Fred VanVleet", college: "Wichita State" },
+      { name: "Buddy Hield", college: "Oklahoma" },
+      { name: "Khris Middleton", college: "Texas A&M" },
+      { name: "DeMar DeRozan", college: "USC" },
+      { name: "Russell Westbrook", college: "UCLA" },
+
+      // Tough ones
+      { name: "Duncan Robinson", college: "Michigan" },
+      { name: "Malcolm Brogdon", college: "Virginia" },
+      { name: "Jalen Brunson", college: "Villanova" },
+      { name: "Mikal Bridges", college: "Villanova" },
+      { name: "Domantas Sabonis", college: "Gonzaga" },
+      { name: "Rudy Gobert", college: "None" },
+      { name: "Victor Wembanyama", college: "None" },
+      { name: "Chet Holmgren", college: "Gonzaga" },
+      { name: "Brandon Ingram", college: "Duke" },
+      { name: "Karl-Anthony Towns", college: "Kentucky" }
     ];
 
     let currentPlayer = null;
+    let streak = 0;
+    let bestStreak = 0;
+
+    function updateStreakDisplay() {
+      document.getElementById("streakDisplay").textContent =
+        `Streak: ${streak} | Best: ${bestStreak}`;
+    }
 
     function newPlayer() {
       const randomIndex = Math.floor(Math.random() * players.length);
@@ -122,6 +177,7 @@
 
     function checkGuess() {
       if (!currentPlayer) return;
+
       const guess = document.getElementById("guessInput").value.trim().toLowerCase();
       const correct = currentPlayer.college.toLowerCase();
       const resultEl = document.getElementById("result");
@@ -129,10 +185,17 @@
       if (guess === correct) {
         resultEl.textContent = "Correct!";
         resultEl.style.color = "green";
+
+        streak++;
+        if (streak > bestStreak) bestStreak = streak;
+
       } else {
         resultEl.textContent = `Correct answer: ${currentPlayer.college}`;
         resultEl.style.color = "red";
+        streak = 0;
       }
+
+      updateStreakDisplay();
     }
 
     document.getElementById("newPlayer").addEventListener("click", newPlayer);
@@ -140,6 +203,8 @@
     document.getElementById("guessInput").addEventListener("keyup", (e) => {
       if (e.key === "Enter") checkGuess();
     });
+
+    updateStreakDisplay();
   </script>
 </body>
 </html>
