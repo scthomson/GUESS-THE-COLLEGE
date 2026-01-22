@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Challenge – NBA College Guess</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f7;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: #222;
+    }
+
+    .player {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin: 16px 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #submitGuess {
+      background: #007aff;
+      color: white;
+    }
+
+    .result {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #007aff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>Daily Challenge</h1>
+
+    <div id="streakDisplay" style="margin-bottom: 12px; font-weight: bold; color: #555;">
+      Daily Streak: 0
+    </div>
+
+    <div class="player" id="playerName">Loading...</div>
+
+    <input id="guessInput" type="text" placeholder="Enter college..." />
+
+    <button id="submitGuess">Submit Guess</button>
+
+    <div class="result" id="result"></div>
+
+    <a href="index.html">Back to Main Game</a>
+  </div>
+
+  <script>
+    // Hard-mode only players
+    const players = [
+      { name: "CJ McCollum", college: "Lehigh" },
+      { name: "Paul George", college: "Fresno State" },
+      { name: "Klay Thompson", college: "Washington State" },
+      { name: "Draymond Green", college: "Michigan State" },
+      { name: "Pascal Siakam", college: "New Mexico State" },
+      { name: "Fred VanVleet", college: "Wichita State" },
+      { name: "Buddy Hield", college: "Oklahoma" },
+      { name: "Khris Middleton", college: "Texas A&M" },
+      { name: "DeMar DeRozan", college: "USC" },
+      { name: "Russell Westbrook", college: "UCLA" },
+      { name: "Duncan Robinson", college: "Michigan" },
+      { name: "Malcolm Brogdon", college: "Virginia" },
+      { name: "Jalen Brunson", college: "Villanova" },
+      { name: "Mikal Bridges", college: "Villanova" },
+      { name: "Domantas Sabonis", college: "Gonzaga" },
+      { name: "Rudy Gobert", college: "None" },
+      { name: "Victor Wembanyama", college: "None" },
+      { name: "Chet Holmgren", college: "Gonzaga" },
+      { name: "Brandon Ingram", college: "Duke" },
+      { name: "Karl-Anthony Towns", college: "Kentucky" }
+    ];
+
+    let guessesLeft = 3;
+    let dailyPlayer = null;
+
+    function getDailyIndex() {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = today.getMonth() + 1;
+      const d = today.getDate();
+      return (y + m + d) % players.length;
+    }
+
+    function loadDailyPlayer() {
+      const index = getDailyIndex();
+      dailyPlayer = players[index];
+      document.getElementById("playerName").textContent = dailyPlayer.name;
+    }
+
+    function updateStreakDisplay() {
+      const streak = localStorage.getItem("dailyStreak") || 0;
+      document.getElementById("streakDisplay").textContent = `Daily Streak: ${streak}`;
+    }
+
+    function lockGame(message) {
+      document.getElementById("result").textContent = message;
+      document.getElementById("guessInput").disabled = true;
+      document.getElementById("submitGuess").disabled = true;
+    }
+
+    function checkIfPlayedToday() {
+      const today = new Date().toDateString();
+      const lastPlayed = localStorage.getItem("dailyPlayed");
+
+      if (today === lastPlayed) {
+        lockGame("Come back tomorrow!");
+        return true;
+      }
+      return false;
+    }
+
+    function submitGuess() {
+      if (!dailyPlayer) return;
+
+      const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+      const correct = dailyPlayer.college.toLowerCase();
+      const resultEl = document.getElementById("result");
+
+      if (guess === correct) {
+        resultEl.textContent = "Correct!";
+        resultEl.style.color = "green";
+
+        let streak = parseInt(localStorage.getItem("dailyStreak") || 0);
+        streak++;
+        localStorage.setItem("dailyStreak", streak);
+
+        localStorage.setItem("dailyPlayed", new Date().toDateString());
+        lockGame("Nice job! Come back tomorrow!");
+        updateStreakDisplay();
+        return;
+      }
+
+      guessesLeft--;
+
+      if (guessesLeft > 0) {
+        resultEl.textContent = `Incorrect. ${guessesLeft} guesses left.`;
+        resultEl.style.color = "red";
+      } else {
+        resultEl.textContent = `Out of guesses! Correct answer: ${dailyPlayer.college}`;
+        resultEl.style.color = "red";
+
+        localStorage.setItem("dailyStreak", 0);
+        localStorage.setItem("dailyPlayed", new Date().toDateString());
+        lockGame("Come back tomorrow!");
+        updateStreakDisplay();
+      }
+    }
+
+    document.getElementById("submitGuess").addEventListener("click", submitGuess);
+    document.getElementById("guessInput").addEventListener("keyup", (e) => {
+      if (e.key === "Enter") submitGuess();
+    });
+
+    // Initialize
+    loadDailyPlayer();
+    updateStreakDisplay();
+    checkIfPlayedToday();
+  </script>
+</body>
+</html>
