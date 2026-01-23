@@ -8,42 +8,56 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f7;
+      background: #111827; /* Dark sports background */
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       min-height: 100vh;
+      color: white;
     }
 
     .card {
-      background: white;
+      background: #1f2937; /* Dark gray card */
       width: 100%;
       max-width: 480px;
-      padding: 24px;
+      padding: 28px;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 22px rgba(29, 78, 216, 0.35); /* Soft blue glow */
+      border: 1px solid #374151;
       text-align: center;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-      color: #222;
+      font-size: 2rem;
+      margin-bottom: 16px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #60a5fa; /* Light blue accent */
+      text-transform: uppercase;
     }
 
     .player {
       font-size: 1.4rem;
       font-weight: bold;
-      margin: 16px 0;
+      margin: 18px 0;
+      color: white;
     }
 
     input {
       width: 100%;
       padding: 12px;
       font-size: 1rem;
-      border: 1px solid #ccc;
+      border: 1px solid #4b5563;
+      background: #111827;
+      color: white;
       border-radius: 8px;
       margin-bottom: 12px;
     }
@@ -57,8 +71,14 @@
       margin-top: 8px;
       cursor: pointer;
       font-weight: bold;
-      background: #007aff;
+      background: #1D4ED8; /* Blue accent */
       color: white;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(29, 78, 216, 0.45);
     }
 
     .result {
@@ -70,15 +90,20 @@
     .streak {
       margin-bottom: 12px;
       font-weight: bold;
-      color: #555;
+      color: #93c5fd; /* Soft blue */
     }
 
     a {
       display: block;
       margin-top: 20px;
-      color: #007aff;
+      color: #60a5fa;
       text-decoration: none;
       font-weight: bold;
+      transition: 0.2s;
+    }
+
+    a:hover {
+      color: #93c5fd;
     }
   </style>
 </head>
@@ -101,9 +126,6 @@
   </div>
 
   <script>
-    // -----------------------------
-    // NBA PLAYER DATABASE
-    // -----------------------------
     const players = [
       { name: "LeBron James", college: "None" },
       { name: "Stephen Curry", college: "Davidson" },
@@ -137,9 +159,6 @@
       { name: "Andrew Wiggins", college: "Kansas" }
     ];
 
-    // -----------------------------
-    // GAME LOGIC
-    // -----------------------------
     let currentPlayer = null;
 
     function pickRandomPlayer() {
@@ -147,7 +166,6 @@
       document.getElementById("playerName").textContent = currentPlayer.name;
     }
 
-    // STREAK SYSTEM
     function updateStreak(correct) {
       let streak = parseInt(localStorage.getItem("nbaStreak") || 0);
       let best = parseInt(localStorage.getItem("nbaBest") || 0);
@@ -173,11 +191,11 @@
 
       if (guess === correct) {
         resultEl.textContent = "Correct!";
-        resultEl.style.color = "green";
+        resultEl.style.color = "#4ade80"; /* Green success */
         updateStreak(true);
       } else {
         resultEl.textContent = `Incorrect — ${currentPlayer.college}`;
-        resultEl.style.color = "red";
+        resultEl.style.color = "#f87171"; /* Soft red */
         updateStreak(false);
       }
 
@@ -190,7 +208,6 @@
       if (e.key === "Enter") submitGuess();
     });
 
-    // Load streak + first player
     updateStreak(false);
     pickRandomPlayer();
   </script>
