@@ -8,48 +8,64 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f7;
+      background: #111827; /* Dark sports background */
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      color: white;
     }
 
     .card {
-      background: white;
+      background: #1f2937; /* Dark gray card */
       width: 100%;
       max-width: 480px;
       padding: 32px;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
       text-align: center;
+      border: 1px solid #374151;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-size: 2.2rem;
-      margin-bottom: 24px;
-      color: #222;
-      font-weight: bold;
+      font-size: 2.4rem;
+      margin-bottom: 28px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: white;
+      text-transform: uppercase;
     }
 
     .menu-button {
       width: 100%;
       padding: 16px;
-      margin: 10px 0;
+      margin: 12px 0;
       font-size: 1.2rem;
       border: none;
       border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
-      background: #007aff;
       color: white;
       transition: 0.2s;
     }
 
+    /* Team-color inspired buttons */
+    .nba-btn { background: #1D4ED8; }   /* Blue */
+    .daily-btn { background: #D97706; } /* Gold */
+    .nfl-btn { background: #DC2626; }   /* Red */
+
+    /* Hover glow */
     .menu-button:hover {
-      background: #005fcc;
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(255,255,255,0.25);
     }
   </style>
 </head>
@@ -58,15 +74,15 @@
   <div class="card">
     <h1>Ball Knowers</h1>
 
-    <button class="menu-button" onclick="location.href='nba.html'">
+    <button class="menu-button nba-btn" onclick="location.href='nba.html'">
       NBA Guess the College
     </button>
 
-    <button class="menu-button" onclick="location.href='daily.html'">
+    <button class="menu-button daily-btn" onclick="location.href='daily.html'">
       NBA Daily Challenge
     </button>
 
-    <button class="menu-button" onclick="location.href='nfl.html'">
+    <button class="menu-button nfl-btn" onclick="location.href='nfl.html'">
       NFL Guess the College
     </button>
   </div>
