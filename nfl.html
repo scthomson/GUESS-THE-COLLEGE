@@ -8,29 +8,40 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f7;
+      background: #111827; /* Dark sports background */
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       min-height: 100vh;
+      color: white;
     }
 
     .card {
-      background: white;
+      background: #1f2937; /* Dark gray card */
       width: 100%;
       max-width: 480px;
-      padding: 24px;
+      padding: 28px;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 22px rgba(220, 38, 38, 0.35); /* Soft red glow */
+      border: 1px solid #374151;
       text-align: center;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-      color: #222;
+      font-size: 2rem;
+      margin-bottom: 16px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #f87171; /* Light red accent */
+      text-transform: uppercase;
     }
 
     .difficulty-buttons {
@@ -47,25 +58,35 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      background: #e5e5ea;
+      background: #DC2626; /* Red accent */
+      color: white;
+      transition: 0.2s;
     }
 
     .difficulty-buttons button.active {
-      background: #007aff;
-      color: white;
+      background: #b91c1c;
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+    }
+
+    .difficulty-buttons button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(220, 38, 38, 0.45);
     }
 
     .player {
       font-size: 1.4rem;
       font-weight: bold;
-      margin: 16px 0;
+      margin: 18px 0;
+      color: white;
     }
 
     input {
       width: 100%;
       padding: 12px;
       font-size: 1rem;
-      border: 1px solid #ccc;
+      border: 1px solid #4b5563;
+      background: #111827;
+      color: white;
       border-radius: 8px;
       margin-bottom: 12px;
     }
@@ -79,8 +100,14 @@
       margin-top: 8px;
       cursor: pointer;
       font-weight: bold;
-      background: #007aff;
+      background: #DC2626; /* Red accent */
       color: white;
+      transition: 0.2s;
+    }
+
+    button#submitGuess:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(220, 38, 38, 0.45);
     }
 
     .result {
@@ -92,15 +119,20 @@
     .streak {
       margin-bottom: 12px;
       font-weight: bold;
-      color: #555;
+      color: #fca5a5; /* Soft red */
     }
 
     a {
       display: block;
       margin-top: 20px;
-      color: #007aff;
+      color: #f87171;
       text-decoration: none;
       font-weight: bold;
+      transition: 0.2s;
+    }
+
+    a:hover {
+      color: #fecaca;
     }
   </style>
 </head>
@@ -125,14 +157,10 @@
 
     <div class="result" id="result"></div>
 
-    <a href="index.html">Back to Main Game</a>
+    <a href="index.html">Back to Home</a>
   </div>
 
   <script>
-    // -----------------------------
-    // NFL PLAYER DATABASE (~300 players)
-    // -----------------------------
-
     // EASY = Modern stars + big schools
     const easyPlayers = [
       { name: "Patrick Mahomes", college: "Texas Tech" },
@@ -154,25 +182,14 @@
       { name: "Trevor Lawrence", college: "Clemson" },
       { name: "Travis Kelce", college: "Cincinnati" },
       { name: "George Kittle", college: "Iowa" },
-      { name: "DK Metcalf", college: "Ole Miss" },
-      { name: "DeVonta Smith", college: "Alabama" },
-      { name: "Najee Harris", college: "Alabama" },
-      { name: "Jaylen Waddle", college: "Alabama" },
-      { name: "Garrett Wilson", college: "Ohio State" },
-      { name: "Chris Olave", college: "Ohio State" },
-      { name: "Bijan Robinson", college: "Texas" },
-      { name: "Marvin Harrison Jr.", college: "Ohio State" },
-      { name: "Jordan Love", college: "Utah State" },
-      { name: "Puka Nacua", college: "BYU" },
-      { name: "Aidan Hutchinson", college: "Michigan" }
+      { name: "DK Metcalf", college: "Ole Miss" }
     ];
 
-    // MEDIUM = Stars + legends (balanced eras)
+    // MEDIUM = Stars + legends
     const mediumPlayers = [
       ...easyPlayers,
       { name: "Tom Brady", college: "Michigan" },
       { name: "Peyton Manning", college: "Tennessee" },
-      { name: "Eli Manning", college: "Ole Miss" },
       { name: "Drew Brees", college: "Purdue" },
       { name: "Aaron Rodgers", college: "California" },
       { name: "Brett Favre", college: "Southern Miss" },
@@ -180,70 +197,23 @@
       { name: "Joe Montana", college: "Notre Dame" },
       { name: "Jerry Rice", college: "Mississippi Valley State" },
       { name: "Randy Moss", college: "Marshall" },
-      { name: "Terrell Owens", college: "Chattanooga" },
-      { name: "Barry Sanders", college: "Oklahoma State" },
-      { name: "Emmitt Smith", college: "Florida" },
-      { name: "LaDainian Tomlinson", college: "TCU" },
-      { name: "Adrian Peterson", college: "Oklahoma" },
-      { name: "Ray Lewis", college: "Miami" },
-      { name: "Ed Reed", college: "Miami" },
-      { name: "Brian Urlacher", college: "New Mexico" },
-      { name: "Troy Polamalu", college: "USC" },
-      { name: "Calvin Johnson", college: "Georgia Tech" },
-      { name: "Steve Young", college: "BYU" },
-      { name: "Jim Kelly", college: "Miami" },
-      { name: "Kurt Warner", college: "Northern Iowa" },
-      { name: "Michael Vick", college: "Virginia Tech" },
-      { name: "Cam Newton", college: "Auburn" },
-      { name: "Matt Ryan", college: "Boston College" },
-      { name: "Philip Rivers", college: "NC State" },
-      { name: "Tony Gonzalez", college: "California" },
-      { name: "Rob Gronkowski", college: "Arizona" },
-      { name: "Marshawn Lynch", college: "California" },
-      { name: "Frank Gore", college: "Miami" },
-      { name: "Reggie Wayne", college: "Miami" },
-      { name: "Andre Johnson", college: "Miami" },
-      { name: "Chad Johnson", college: "Oregon State" },
-      { name: "Warren Sapp", college: "Miami" },
-      { name: "Deion Sanders", college: "Florida State" },
-      { name: "Bo Jackson", college: "Auburn" },
-      { name: "Herschel Walker", college: "Georgia" }
+      { name: "Barry Sanders", college: "Oklahoma State" }
     ];
 
     // HARD = Legends + small-school deep cuts
     const hardPlayers = [
       ...mediumPlayers,
       { name: "Kurt Warner", college: "Northern Iowa" },
-      { name: "Joe Flacco", college: "Delaware" },
       { name: "Tony Romo", college: "Eastern Illinois" },
       { name: "Carson Wentz", college: "North Dakota State" },
-      { name: "Jimmy Garoppolo", college: "Eastern Illinois" },
-      { name: "David Johnson", college: "Northern Iowa" },
-      { name: "Austin Ekeler", college: "Western Colorado" },
       { name: "Cooper Kupp", college: "Eastern Washington" },
       { name: "Adam Thielen", college: "Minnesota State" },
-      { name: "Jerry Rice", college: "Mississippi Valley State" },
       { name: "Walter Payton", college: "Jackson State" },
       { name: "Steve McNair", college: "Alcorn State" },
       { name: "Shannon Sharpe", college: "Savannah State" },
-      { name: "Robert Mathis", college: "Alabama A&M" },
-      { name: "Deacon Jones", college: "Mississippi Valley State" },
-      { name: "Fred Jackson", college: "Coe College" },
-      { name: "Miles Austin", college: "Monmouth" },
-      { name: "Pierre Garçon", college: "Mount Union" },
-      { name: "John Randle", college: "Texas A&M–Kingsville" },
-      { name: "London Fletcher", college: "John Carroll" },
-      { name: "Ali Marpet", college: "Hobart" },
       { name: "Marques Colston", college: "Hofstra" },
-      { name: "Donald Driver", college: "Alcorn State" },
-      { name: "Rod Smith", college: "Missouri Southern" },
-      { name: "Brandon Jacobs", college: "Southern Illinois" },
-      { name: "James Harrison", college: "Kent State" }
+      { name: "London Fletcher", college: "John Carroll" }
     ];
-
-    // -----------------------------
-    // GAME LOGIC
-    // -----------------------------
 
     let currentPool = [];
     let currentPlayer = null;
@@ -267,7 +237,6 @@
       pickRandomPlayer();
     }
 
-    // STREAK SYSTEM
     function updateStreak(correct) {
       let streak = parseInt(localStorage.getItem("nflStreak") || 0);
       let best = parseInt(localStorage.getItem("nflBest") || 0);
@@ -295,11 +264,11 @@
 
       if (guess === correct) {
         resultEl.textContent = "Correct!";
-        resultEl.style.color = "green";
+        resultEl.style.color = "#4ade80";
         updateStreak(true);
       } else {
         resultEl.textContent = `Incorrect — ${currentPlayer.college}`;
-        resultEl.style.color = "red";
+        resultEl.style.color = "#f87171";
         updateStreak(false);
       }
 
@@ -312,13 +281,12 @@
       if (e.key === "Enter") submitGuess();
     });
 
-    // Difficulty button listeners
     document.getElementById("easyBtn").onclick = () => setDifficulty(easyPlayers, "easyBtn");
     document.getElementById("mediumBtn").onclick = () => setDifficulty(mediumPlayers, "mediumBtn");
     document.getElementById("hardBtn").onclick = () => setDifficulty(hardPlayers, "hardBtn");
 
-    // Load streak on startup
     updateStreak(false);
   </script>
 </body>
 </html>
+
