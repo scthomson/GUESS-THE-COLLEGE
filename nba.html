@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ball Knowers</title>
+  <title>NBA Guess the College</title>
 
   <style>
     body {
@@ -13,7 +13,7 @@
       padding: 20px;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
     }
 
@@ -21,54 +21,179 @@
       background: white;
       width: 100%;
       max-width: 480px;
-      padding: 32px;
+      padding: 24px;
       border-radius: 16px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       text-align: center;
     }
 
     h1 {
-      font-size: 2.2rem;
-      margin-bottom: 24px;
+      font-size: 1.8rem;
+      margin-bottom: 12px;
       color: #222;
-      font-weight: bold;
     }
 
-    .menu-button {
+    .player {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 16px 0;
+    }
+
+    input {
       width: 100%;
-      padding: 16px;
-      margin: 10px 0;
-      font-size: 1.2rem;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
       cursor: pointer;
       font-weight: bold;
       background: #007aff;
       color: white;
-      transition: 0.2s;
     }
 
-    .menu-button:hover {
-      background: #005fcc;
+    .result {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .streak {
+      margin-bottom: 12px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #007aff;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <h1>Ball Knowers</h1>
+    <h1>NBA Guess the College</h1>
 
-    <button class="menu-button" onclick="location.href='nba.html'">
-      NBA Guess the College
-    </button>
+    <div class="streak" id="streakDisplay">Streak: 0 | Best: 0</div>
 
-    <button class="menu-button" onclick="location.href='daily.html'">
-      NBA Daily Challenge
-    </button>
+    <div class="player" id="playerName">Loading...</div>
 
-    <button class="menu-button" onclick="location.href='nfl.html'">
-      NFL Guess the College
-    </button>
+    <input id="guessInput" type="text" placeholder="Enter college..." />
+
+    <button id="submitGuess">Submit Guess</button>
+
+    <div class="result" id="result"></div>
+
+    <a href="index.html">Back to Home</a>
   </div>
+
+  <script>
+    // -----------------------------
+    // NBA PLAYER DATABASE
+    // -----------------------------
+    const players = [
+      { name: "LeBron James", college: "None" },
+      { name: "Stephen Curry", college: "Davidson" },
+      { name: "Kevin Durant", college: "Texas" },
+      { name: "Kyrie Irving", college: "Duke" },
+      { name: "James Harden", college: "Arizona State" },
+      { name: "Giannis Antetokounmpo", college: "None" },
+      { name: "Joel Embiid", college: "Kansas" },
+      { name: "Jayson Tatum", college: "Duke" },
+      { name: "Damian Lillard", college: "Weber State" },
+      { name: "Kawhi Leonard", college: "San Diego State" },
+      { name: "Anthony Davis", college: "Kentucky" },
+      { name: "Devin Booker", college: "Kentucky" },
+      { name: "Karl-Anthony Towns", college: "Kentucky" },
+      { name: "Zion Williamson", college: "Duke" },
+      { name: "Ja Morant", college: "Murray State" },
+      { name: "Jimmy Butler", college: "Marquette" },
+      { name: "Paul George", college: "Fresno State" },
+      { name: "Chris Paul", college: "Wake Forest" },
+      { name: "Trae Young", college: "Oklahoma" },
+      { name: "Bradley Beal", college: "Florida" },
+      { name: "Klay Thompson", college: "Washington State" },
+      { name: "Russell Westbrook", college: "UCLA" },
+      { name: "DeMar DeRozan", college: "USC" },
+      { name: "Nikola Jokic", college: "None" },
+      { name: "Luka Doncic", college: "None" },
+      { name: "Shai Gilgeous-Alexander", college: "Kentucky" },
+      { name: "Donovan Mitchell", college: "Louisville" },
+      { name: "Bam Adebayo", college: "Kentucky" },
+      { name: "Jaylen Brown", college: "California" },
+      { name: "Andrew Wiggins", college: "Kansas" }
+    ];
+
+    // -----------------------------
+    // GAME LOGIC
+    // -----------------------------
+    let currentPlayer = null;
+
+    function pickRandomPlayer() {
+      currentPlayer = players[Math.floor(Math.random() * players.length)];
+      document.getElementById("playerName").textContent = currentPlayer.name;
+    }
+
+    // STREAK SYSTEM
+    function updateStreak(correct) {
+      let streak = parseInt(localStorage.getItem("nbaStreak") || 0);
+      let best = parseInt(localStorage.getItem("nbaBest") || 0);
+
+      if (correct) {
+        streak++;
+        if (streak > best) best = streak;
+      } else {
+        streak = 0;
+      }
+
+      localStorage.setItem("nbaStreak", streak);
+      localStorage.setItem("nbaBest", best);
+
+      document.getElementById("streakDisplay").textContent =
+        `Streak: ${streak} | Best: ${best}`;
+    }
+
+    function submitGuess() {
+      const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+      const correct = currentPlayer.college.toLowerCase();
+      const resultEl = document.getElementById("result");
+
+      if (guess === correct) {
+        resultEl.textContent = "Correct!";
+        resultEl.style.color = "green";
+        updateStreak(true);
+      } else {
+        resultEl.textContent = `Incorrect — ${currentPlayer.college}`;
+        resultEl.style.color = "red";
+        updateStreak(false);
+      }
+
+      pickRandomPlayer();
+      document.getElementById("guessInput").value = "";
+    }
+
+    document.getElementById("submitGuess").addEventListener("click", submitGuess);
+    document.getElementById("guessInput").addEventListener("keyup", e => {
+      if (e.key === "Enter") submitGuess();
+    });
+
+    // Load streak + first player
+    updateStreak(false);
+    pickRandomPlayer();
+  </script>
 </body>
 </html>
+
