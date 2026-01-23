@@ -3,47 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Challenge – NBA College Guess</title>
+  <title>NBA Daily Challenge</title>
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f7;
+      background: #111827; /* Dark sports background */
       margin: 0;
       padding: 20px;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
+      color: white;
     }
 
     .card {
-      background: white;
+      background: #1f2937; /* Dark gray card */
       width: 100%;
-      max-width: 420px;
-      padding: 24px;
+      max-width: 480px;
+      padding: 28px;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 22px rgba(217, 119, 6, 0.35); /* Soft gold glow */
+      border: 1px solid #374151;
       text-align: center;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-size: 1.6rem;
-      margin-bottom: 12px;
-      color: #222;
+      font-size: 2rem;
+      margin-bottom: 16px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #fbbf24; /* Gold accent */
+      text-transform: uppercase;
     }
 
     .player {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: bold;
-      margin: 16px 0;
+      margin: 18px 0;
+      color: white;
     }
 
     input {
       width: 100%;
       padding: 12px;
       font-size: 1rem;
-      border: 1px solid #ccc;
+      border: 1px solid #4b5563;
+      background: #111827;
+      color: white;
       border-radius: 8px;
       margin-bottom: 12px;
     }
@@ -57,11 +71,14 @@
       margin-top: 8px;
       cursor: pointer;
       font-weight: bold;
+      background: #D97706; /* Gold accent */
+      color: white;
+      transition: 0.2s;
     }
 
-    #submitGuess {
-      background: #007aff;
-      color: white;
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(217, 119, 6, 0.45);
     }
 
     .result {
@@ -70,25 +87,34 @@
       font-weight: bold;
     }
 
+    .streak {
+      margin-bottom: 12px;
+      font-weight: bold;
+      color: #fcd34d; /* Soft gold */
+    }
+
     a {
       display: block;
       margin-top: 20px;
-      color: #007aff;
+      color: #fbbf24;
       text-decoration: none;
       font-weight: bold;
+      transition: 0.2s;
+    }
+
+    a:hover {
+      color: #fde68a;
     }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <h1>Daily Challenge</h1>
+    <h1>NBA Daily Challenge</h1>
 
-    <div id="streakDisplay" style="margin-bottom: 12px; font-weight: bold; color: #555;">
-      Daily Streak: 0
-    </div>
+    <div class="streak" id="streakDisplay">Daily Streak: 0 | Best: 0</div>
 
-    <div class="player" id="playerName">Loading...</div>
+    <div class="player" id="playerName">Loading daily player...</div>
 
     <input id="guessInput" type="text" placeholder="Enter college..." />
 
@@ -96,119 +122,78 @@
 
     <div class="result" id="result"></div>
 
-    <a href="index.html">Back to Main Game</a>
+    <a href="index.html">Back to Home</a>
   </div>
 
   <script>
-    // Hard-mode only players
-    const players = [
-      { name: "CJ McCollum", college: "Lehigh" },
+    // DAILY PLAYER POOL (harder players)
+    const dailyPlayers = [
+      { name: "Kawhi Leonard", college: "San Diego State" },
+      { name: "Damian Lillard", college: "Weber State" },
+      { name: "Jimmy Butler", college: "Marquette" },
       { name: "Paul George", college: "Fresno State" },
-      { name: "Klay Thompson", college: "Washington State" },
-      { name: "Draymond Green", college: "Michigan State" },
-      { name: "Pascal Siakam", college: "New Mexico State" },
-      { name: "Fred VanVleet", college: "Wichita State" },
-      { name: "Buddy Hield", college: "Oklahoma" },
-      { name: "Khris Middleton", college: "Texas A&M" },
+      { name: "Ja Morant", college: "Murray State" },
+      { name: "Shai Gilgeous-Alexander", college: "Kentucky" },
+      { name: "Bam Adebayo", college: "Kentucky" },
       { name: "DeMar DeRozan", college: "USC" },
-      { name: "Russell Westbrook", college: "UCLA" },
-      { name: "Duncan Robinson", college: "Michigan" },
-      { name: "Malcolm Brogdon", college: "Virginia" },
-      { name: "Jalen Brunson", college: "Villanova" },
-      { name: "Mikal Bridges", college: "Villanova" },
-      { name: "Domantas Sabonis", college: "Gonzaga" },
-      { name: "Rudy Gobert", college: "None" },
-      { name: "Victor Wembanyama", college: "None" },
-      { name: "Chet Holmgren", college: "Gonzaga" },
-      { name: "Brandon Ingram", college: "Duke" },
-      { name: "Karl-Anthony Towns", college: "Kentucky" }
+      { name: "Klay Thompson", college: "Washington State" },
+      { name: "Andrew Wiggins", college: "Kansas" }
     ];
 
-    let guessesLeft = 3;
-    let dailyPlayer = null;
-
+    // Pick deterministic daily player
     function getDailyIndex() {
       const today = new Date();
-      const y = today.getFullYear();
-      const m = today.getMonth() + 1;
-      const d = today.getDate();
-      return (y + m + d) % players.length;
+      const start = new Date(2024, 0, 1);
+      const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+      return diff % dailyPlayers.length;
     }
 
-    function loadDailyPlayer() {
-      const index = getDailyIndex();
-      dailyPlayer = players[index];
-      document.getElementById("playerName").textContent = dailyPlayer.name;
-    }
+    let currentPlayer = dailyPlayers[getDailyIndex()];
+    document.getElementById("playerName").textContent = currentPlayer.name;
 
-    function updateStreakDisplay() {
-      const streak = localStorage.getItem("dailyStreak") || 0;
-      document.getElementById("streakDisplay").textContent = `Daily Streak: ${streak}`;
-    }
+    function updateStreak(correct) {
+      let streak = parseInt(localStorage.getItem("dailyStreak") || 0);
+      let best = parseInt(localStorage.getItem("dailyBest") || 0);
 
-    function lockGame(message) {
-      document.getElementById("result").textContent = message;
-      document.getElementById("guessInput").disabled = true;
-      document.getElementById("submitGuess").disabled = true;
-    }
-
-    function checkIfPlayedToday() {
-      const today = new Date().toDateString();
-      const lastPlayed = localStorage.getItem("dailyPlayed");
-
-      if (today === lastPlayed) {
-        lockGame("Come back tomorrow!");
-        return true;
+      if (correct) {
+        streak++;
+        if (streak > best) best = streak;
+      } else {
+        streak = 0;
       }
-      return false;
+
+      localStorage.setItem("dailyStreak", streak);
+      localStorage.setItem("dailyBest", best);
+
+      document.getElementById("streakDisplay").textContent =
+        `Daily Streak: ${streak} | Best: ${best}`;
     }
 
     function submitGuess() {
-      if (!dailyPlayer) return;
-
       const guess = document.getElementById("guessInput").value.trim().toLowerCase();
-      const correct = dailyPlayer.college.toLowerCase();
+      const correct = currentPlayer.college.toLowerCase();
       const resultEl = document.getElementById("result");
 
       if (guess === correct) {
         resultEl.textContent = "Correct!";
-        resultEl.style.color = "green";
-
-        let streak = parseInt(localStorage.getItem("dailyStreak") || 0);
-        streak++;
-        localStorage.setItem("dailyStreak", streak);
-
-        localStorage.setItem("dailyPlayed", new Date().toDateString());
-        lockGame("Nice job! Come back tomorrow!");
-        updateStreakDisplay();
-        return;
-      }
-
-      guessesLeft--;
-
-      if (guessesLeft > 0) {
-        resultEl.textContent = `Incorrect. ${guessesLeft} guesses left.`;
-        resultEl.style.color = "red";
+        resultEl.style.color = "#4ade80"; /* Green */
+        updateStreak(true);
       } else {
-        resultEl.textContent = `Out of guesses! Correct answer: ${dailyPlayer.college}`;
-        resultEl.style.color = "red";
-
-        localStorage.setItem("dailyStreak", 0);
-        localStorage.setItem("dailyPlayed", new Date().toDateString());
-        lockGame("Come back tomorrow!");
-        updateStreakDisplay();
+        resultEl.textContent = `Incorrect — ${currentPlayer.college}`;
+        resultEl.style.color = "#f87171"; /* Soft red */
+        updateStreak(false);
       }
+
+      document.getElementById("guessInput").value = "";
     }
 
     document.getElementById("submitGuess").addEventListener("click", submitGuess);
-    document.getElementById("guessInput").addEventListener("keyup", (e) => {
+    document.getElementById("guessInput").addEventListener("keyup", e => {
       if (e.key === "Enter") submitGuess();
     });
 
-    // Initialize
-    loadDailyPlayer();
-    updateStreakDisplay();
-    checkIfPlayedToday();
+    updateStreak(false);
   </script>
 </body>
 </html>
+
