@@ -22,31 +22,41 @@
       text-align: center;
     }
 
-    /* LOGO */
+    /* FUN LOGO */
     .logo {
       display: flex;
       flex-direction: column;
       align-items: center;
+      transform: rotate(-1deg);
     }
 
     .logo-main {
-      font-size: 52px;
+      font-size: 54px;
       font-weight: 900;
       letter-spacing: -1px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .logo-accent {
-      width: 80px;
-      height: 6px;
-      background: #e63946; /* red accent bar */
-      border-radius: 3px;
-      margin-top: 8px;
+    .logo-main span.emojis {
+      font-size: 40px;
+      transform: rotate(4deg);
+    }
+
+    .logo-swoosh {
+      width: 140px;
+      height: 10px;
+      background: linear-gradient(90deg, #e63946, #ff8fa3);
+      border-radius: 50px;
+      margin-top: 6px;
+      transform: rotate(2deg);
     }
 
     p.subtitle {
       font-size: 18px;
       opacity: 0.7;
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
     .modes {
@@ -98,8 +108,11 @@
 <body>
   <header>
     <div class="logo">
-      <span class="logo-main">BALL KNOWERS</span>
-      <div class="logo-accent"></div>
+      <div class="logo-main">
+        BALL KNOWERS
+        <span class="emojis">🏀🏈</span>
+      </div>
+      <div class="logo-swoosh"></div>
     </div>
     <p class="subtitle">Test your sports knowledge</p>
   </header>
@@ -114,5 +127,7 @@
   </footer>
 </body>
 </html>
+
+
 
 
