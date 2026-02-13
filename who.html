@@ -34,6 +34,20 @@
             margin-left: 10px;
             cursor: pointer;
         }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -45,6 +59,8 @@
     <input id="guessInput" type="text" placeholder="Enter player name">
     <button onclick="checkGuess()">Submit Guess</button>
 
+    <p id="feedback"></p>
+
     <script src="players.js"></script>
 
     <script>
@@ -54,16 +70,20 @@
             const randomIndex = Math.floor(Math.random() * players.length);
             currentPlayer = players[randomIndex];
             document.getElementById("college").textContent = currentPlayer.college;
+            document.getElementById("feedback").textContent = "";
         }
 
         function checkGuess() {
             const guess = document.getElementById("guessInput").value.trim().toLowerCase();
             const correct = currentPlayer.name.toLowerCase();
+            const feedback = document.getElementById("feedback");
 
             if (guess === correct) {
-                // correct guess — no alert
+                feedback.textContent = "Correct!";
+                feedback.className = "correct";
             } else {
-                // incorrect guess — no alert
+                feedback.textContent = "Incorrect!";
+                feedback.className = "incorrect";
             }
         }
 
@@ -72,7 +92,6 @@
 
 </body>
 </html>
-
 
 
 
