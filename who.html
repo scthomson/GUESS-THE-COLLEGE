@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Who Played Here? – Ball Knowers</title>
-  <link rel="icon" href="favicon.ico" />
+  <title>Who Played Here?</title>
   <style>
     body {
       margin: 0;
@@ -15,150 +14,99 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
     }
 
     header {
+      padding: 40px 0 20px;
       text-align: center;
-      margin-top: 20px;
     }
 
-    .logo-main {
-      font-size: 40px;
-      font-weight: 900;
-    }
-
-    .logo-accent {
-      width: 70px;
-      height: 6px;
-      background: #e63946;
-      border-radius: 3px;
-      margin: 10px auto;
-    }
-
-    .subtitle {
-      opacity: 0.7;
-      margin-bottom: 40px;
-    }
-
-    .game-box {
-      background: #1a1a1a;
-      padding: 30px;
-      border-radius: 14px;
-      width: 90%;
-      max-width: 420px;
-      text-align: center;
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
     }
 
     .college {
       font-size: 28px;
+      margin-top: 30px;
       font-weight: 700;
-      margin-bottom: 20px;
     }
 
     input {
-      width: 90%;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
+      margin-top: 20px;
+      padding: 12px;
       font-size: 18px;
-      margin-top: 10px;
-      outline: none;
+      border-radius: 8px;
+      border: none;
+      width: 260px;
+      text-align: center;
     }
 
     button {
       margin-top: 20px;
-      padding: 14px 20px;
+      padding: 12px 20px;
       font-size: 18px;
+      border-radius: 8px;
       border: none;
-      border-radius: 10px;
+      cursor: pointer;
       background: #e63946;
       color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #b72d38;
-    }
-
-    .result {
-      margin-top: 20px;
-      font-size: 20px;
       font-weight: 600;
     }
 
-    .back {
-      margin-top: 40px;
-      opacity: 0.6;
-      text-decoration: none;
-      color: white;
-      font-size: 16px;
+    .result {
+      margin-top: 25px;
+      font-size: 22px;
+      font-weight: 600;
     }
   </style>
 </head>
 
 <body>
-
   <header>
-    <div class="logo-main">WHO PLAYED HERE?</div>
-    <div class="logo-accent"></div>
-    <p class="subtitle">Guess a player who attended this college</p>
+    <h1>Who Played Here?</h1>
+    <p>Guess a player who went to this college</p>
   </header>
 
-  <div class="game-box">
-    <div id="college" class="college">Loading...</div>
+  <div class="college" id="collegeDisplay">Loading...</div>
 
-    <input id="guessInput" type="text" placeholder="Enter a player name" />
+  <input id="guessInput" placeholder="Enter player name" autocomplete="off" />
 
-    <button onclick="checkGuess()">Submit Guess</button>
+  <button onclick="checkGuess()">Submit Guess</button>
 
-    <div id="result" class="result"></div>
-  </div>
+  <div class="result" id="result"></div>
 
-  <a class="back" href="index.html">← Back to Home</a>
+  <!-- LOAD THE MEGA PLAYER LIST FIRST -->
+  <script src="players.js"></script>
 
+  <!-- GAME LOGIC -->
   <script>
-    // SAMPLE DATA — replace with your real list
-    const players = [
-      { name: "Devin Booker", college: "Kentucky" },
-      { name: "Anthony Davis", college: "Kentucky" },
-      { name: "Trae Young", college: "Oklahoma" },
-      { name: "Jalen Hurts", college: "Oklahoma" },
-      { name: "Joe Burrow", college: "LSU" },
-      { name: "Justin Jefferson", college: "LSU" },
-      { name: "Kyrie Irving", college: "Duke" },
-      { name: "Zion Williamson", college: "Duke" }
-    ];
-
     let currentCollege = "";
+    let validPlayers = [];
 
-    function newRound() {
-      const random = players[Math.floor(Math.random() * players.length)];
-      currentCollege = random.college;
-      document.getElementById("college").textContent = currentCollege;
-      document.getElementById("result").textContent = "";
-      document.getElementById("guessInput").value = "";
+    function pickCollege() {
+      const randomPlayer = players[Math.floor(Math.random() * players.length)];
+      currentCollege = randomPlayer.college;
+
+      validPlayers = players
+        .filter(p => p.college === currentCollege)
+        .map(p => p.name.toLowerCase());
+
+      document.getElementById("collegeDisplay").textContent = currentCollege;
     }
 
     function checkGuess() {
-      const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+      const guess = document.getElementById("guessInput").value.toLowerCase().trim();
 
-      const match = players.find(
-        p => p.college === currentCollege && p.name.toLowerCase() === guess
-      );
-
-      if (match) {
+      if (validPlayers.includes(guess)) {
         document.getElementById("result").textContent = "Correct!";
-        setTimeout(newRound, 1200);
       } else {
-        document.getElementById("result").textContent = "Incorrect — try again";
+        document.getElementById("result").textContent = "Incorrect — try again.";
       }
     }
 
-    newRound();
+    pickCollege();
   </script>
-
 </body>
 </html>
 
