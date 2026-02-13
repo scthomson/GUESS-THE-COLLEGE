@@ -1,90 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ball Knowers</title>
-
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #111827; /* Dark sports background */
       margin: 0;
-      padding: 20px;
+      font-family: 'Inter', sans-serif;
+      background: #0d0d0d;
+      color: white;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      color: white;
     }
 
-    .card {
-      background: #1f2937; /* Dark gray card */
-      width: 100%;
-      max-width: 480px;
-      padding: 32px;
-      border-radius: 16px;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    header {
+      padding: 40px 0 20px;
       text-align: center;
-      border: 1px solid #374151;
-      animation: fadeIn 0.4s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-size: 2.4rem;
-      margin-bottom: 28px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: white;
-      text-transform: uppercase;
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin: 0;
     }
 
-    .menu-button {
-      width: 100%;
-      padding: 16px;
-      margin: 12px 0;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 10px;
+    p.subtitle {
+      font-size: 18px;
+      opacity: 0.7;
+      margin-top: 8px;
+    }
+
+    .modes {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .mode-btn {
+      padding: 18px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
       cursor: pointer;
-      font-weight: bold;
+      text-decoration: none;
       color: white;
       transition: 0.2s;
     }
 
-    /* Team-color inspired buttons */
-    .nba-btn { background: #1D4ED8; }   /* Blue */
-    .daily-btn { background: #D97706; } /* Gold */
-    .nfl-btn { background: #DC2626; }   /* Red */
+    .nba {
+      background: #17408B;
+    }
 
-    /* Hover glow */
-    .menu-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 12px rgba(255,255,255,0.25);
+    .nba:hover {
+      background: #0f2d63;
+    }
+
+    .nfl {
+      background: #013369;
+    }
+
+    .nfl:hover {
+      background: #00264d;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      opacity: 0.5;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
-  <div class="card">
+  <header>
     <h1>Ball Knowers</h1>
+    <p class="subtitle">Test your sports knowledge</p>
+  </header>
 
-    <button class="menu-button nba-btn" onclick="location.href='nba.html'">
-      NBA Guess the College
-    </button>
-
-    <button class="menu-button daily-btn" onclick="location.href='daily.html'">
-      NBA Daily Challenge
-    </button>
-
-    <button class="menu-button nfl-btn" onclick="location.href='nfl.html'">
-      NFL Guess the College
-    </button>
+  <div class="modes">
+    <a class="mode-btn nba" href="nba/index.html">NBA Mode</a>
+    <a class="mode-btn nfl" href="nfl/index.html">NFL Mode</a>
   </div>
+
+  <footer>
+    © 2026 Ball Knowers
+  </footer>
 </body>
 </html>
+
