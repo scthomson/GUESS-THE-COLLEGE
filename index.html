@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ball Knowers</title>
-  <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="favicon.ico" />
   <style>
     body {
@@ -23,17 +22,31 @@
       text-align: center;
     }
 
-    h1 {
-      font-size: 48px;
-      font-weight: 800;
+    /* LOGO */
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-main {
+      font-size: 52px;
+      font-weight: 900;
       letter-spacing: -1px;
-      margin: 0;
+    }
+
+    .logo-accent {
+      width: 80px;
+      height: 6px;
+      background: #e63946; /* red accent bar */
+      border-radius: 3px;
+      margin-top: 8px;
     }
 
     p.subtitle {
       font-size: 18px;
       opacity: 0.7;
-      margin-top: 8px;
+      margin-top: 12px;
     }
 
     .modes {
@@ -84,7 +97,10 @@
 
 <body>
   <header>
-    <h1>Ball Knowers</h1>
+    <div class="logo">
+      <span class="logo-main">BALL KNOWERS</span>
+      <div class="logo-accent"></div>
+    </div>
     <p class="subtitle">Test your sports knowledge</p>
   </header>
 
@@ -98,4 +114,5 @@
   </footer>
 </body>
 </html>
+
 
