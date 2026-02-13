@@ -46,33 +46,10 @@
     <button onclick="checkGuess()">Submit Guess</button>
 
     <script src="players.js"></script>
-
-    <script>
-        let currentPlayer;
-
-        function loadNewPlayer() {
-            const randomIndex = Math.floor(Math.random() * players.length);
-            currentPlayer = players[randomIndex];
-            document.getElementById("college").textContent = currentPlayer.college;
-        }
-
-        function checkGuess() {
-            const guess = document.getElementById("guessInput").value.trim().toLowerCase();
-            const correct = currentPlayer.name.toLowerCase();
-
-            if (guess === correct) {
-                alert("Correct!");
-            } else {
-                alert("Incorrect, try again!");
-            }
-        }
-
-        window.onload = loadNewPlayer;
-    </script>
+    <script src="who-played-here.js"></script>
 
 </body>
 </html>
-
 
 
 
