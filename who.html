@@ -74,18 +74,20 @@
         }
 
         function checkGuess() {
-            const guess = document.getElementById("guessInput").value.trim().toLowerCase();
-            const correct = currentPlayer.name.toLowerCase();
-            const feedback = document.getElementById("feedback");
+    console.log("Correct answer is:", currentPlayer.name);
 
-            if (guess === correct) {
-                feedback.textContent = "Correct!";
-                feedback.className = "correct";
-            } else {
-                feedback.textContent = "Incorrect!";
-                feedback.className = "incorrect";
-            }
-        }
+    const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+    const correct = currentPlayer.name.toLowerCase();
+
+    if (guess === correct) {
+        feedback.textContent = "Correct!";
+        feedback.className = "correct";
+    } else {
+        feedback.textContent = "Incorrect!";
+        feedback.className = "incorrect";
+    }
+}
+
 
         window.onload = loadNewPlayer;
     </script>
