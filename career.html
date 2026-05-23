@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Path Mode - Ball Knowers</title>
+    <style>
+        body {
+            background: #0d0d0d;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            color: #4db8ff;
+            text-shadow: 0 0 10px #4db8ff;
+        }
+
+        .career-box {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            margin: 20px auto;
+            font-size: 22px;
+            line-height: 1.6;
+            box-shadow: 0 0 15px rgba(77,184,255,0.4);
+        }
+
+        input {
+            padding: 12px;
+            width: 60%;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #4db8ff;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #80ccff;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .correct {
+            color: #4dff4d;
+            text-shadow: 0 0 10px #4dff4d;
+        }
+
+        .wrong {
+            color: #ff4d4d;
+            text-shadow: 0 0 10px #ff4d4d;
+        }
+
+        a {
+            color: #4db8ff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Career Path Mode</h1>
+    <a href="index.html">← Back to Home</a>
+
+    <div class="career-box" id="careerDisplay">Loading career path...</div>
+
+    <input id="guessInput" placeholder="Enter player name...">
+    <br>
+    <button onclick="checkGuess()">Submit Guess</button>
+
+    <div class="result" id="resultText"></div>
+
+    <script>
+        // TEMP SAMPLE DATA — we will replace this with your real database
+        const players = [
+            {
+                name: "Kevin Durant",
+                teams: ["Seattle SuperSonics", "Oklahoma City Thunder", "Golden State Warriors", "Brooklyn Nets", "Phoenix Suns"]
+            },
+            {
+                name: "Tom Brady",
+                teams: ["New England Patriots", "Tampa Bay Buccaneers"]
+            },
+            {
+                name: "Chris Paul",
+                teams: ["New Orleans Hornets", "Los Angeles Clippers", "Houston Rockets", "Oklahoma City Thunder", "Phoenix Suns", "Golden State Warriors"]
+            }
+        ];
+
+        let currentPlayer = null;
+
+        function newPlayer() {
+            currentPlayer = players[Math.floor(Math.random() * players.length)];
+            document.getElementById("careerDisplay").innerHTML =
+                currentPlayer.teams.join(" → ");
+            document.getElementById("resultText").innerHTML = "";
+            document.getElementById("guessInput").value = "";
+        }
+
+        function checkGuess() {
+            const guess = document.getElementById("guessInput").value.trim().toLowerCase();
+            const correct = currentPlayer.name.toLowerCase();
+
+            if (guess === correct) {
+                document.getElementById("resultText").innerHTML =
+                    `<span class="correct">Correct! It was ${currentPlayer.name}.</span>`;
+            } else {
+                document.getElementById("resultText").innerHTML =
+                    `<span class="wrong">Incorrect. It was ${currentPlayer.name}.</span>`;
+            }
+
+            setTimeout(newPlayer, 2000);
+        }
+
+        newPlayer();
+    </script>
+
+</body>
+</html>
