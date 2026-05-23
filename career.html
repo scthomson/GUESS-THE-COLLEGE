@@ -4,71 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Career Path Mode - Ball Knowers</title>
+
     <style>
         body {
-             background: linear-gradient(135deg, #d4af37, #b8860b);
-    color: black;
-    font-weight: bold;
-    padding: 18px 28px;
-    border-radius: 10px;
-    display: inline-block;
-    margin: 10px;
-    font-size: 22px;
-    text-decoration: none;
-    box-shadow: 0 0 15px rgba(212,175,55,0.6);
-    transition: 0.2s;
-}
-
-.career-gold:hover {
-    background: linear-gradient(135deg, #f5d76e, #d4af37);
-    box-shadow: 0 0 25px rgba(245,215,110,0.9);
-    transform: scale(1.05);
-}
+            background: #0d0d0d;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            padding: 30px;
+            margin: 0;
         }
 
-        h1 {
-            font-size: 42px;
+        /* HEADER */
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 10px;
-            color: #4db8ff;
-            text-shadow: 0 0 10px #4db8ff;
         }
 
+        .logo-main {
+            font-size: 42px;
+            font-weight: 900;
+        }
+
+        .logo-accent {
+            width: 80px;
+            height: 6px;
+            background: #bfa76a;
+            border-radius: 3px;
+            margin-top: 8px;
+            box-shadow: 0 0 12px rgba(191,167,106,0.4);
+        }
+
+        h2 {
+            font-size: 22px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* MAIN BOX */
         .career-box {
             background: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            margin: 20px auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 600px;
+            margin: 30px auto;
             font-size: 22px;
             line-height: 1.6;
-            box-shadow: 0 0 15px rgba(77,184,255,0.4);
+            border: 1px solid #8c7846;
+            box-shadow: 0 0 20px rgba(191,167,106,0.25);
+            transition: 0.3s;
         }
 
+        /* INPUT */
         input {
-            padding: 12px;
-            width: 60%;
+            padding: 14px;
+            width: 70%;
+            max-width: 400px;
             font-size: 18px;
             border-radius: 8px;
-            border: none;
+            border: 1px solid #8c7846;
+            background: #111;
+            color: white;
             margin-top: 20px;
         }
 
-        button {
-            padding: 12px 25px;
+        /* BUTTONS */
+        .btn {
+            padding: 14px 28px;
             font-size: 18px;
-            margin-top: 15px;
+            border-radius: 10px;
             border: none;
-            border-radius: 8px;
-            background: #4db8ff;
-            color: black;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            margin: 10px;
+            transition: 0.2s;
         }
 
-        button:hover {
-            background: #80ccff;
+        .gold-btn {
+            background: linear-gradient(135deg, #bfa76a, #8c7846);
+            color: black;
+            box-shadow: 0 0 12px rgba(191,167,106,0.35);
         }
 
+        .gold-btn:hover {
+            background: linear-gradient(135deg, #d8c48a, #bfa76a);
+            box-shadow: 0 0 20px rgba(191,167,106,0.5);
+            transform: scale(1.05);
+        }
+
+        /* DIFFICULTY SELECTOR */
+        .difficulty {
+            margin-top: 20px;
+        }
+
+        .difficulty button {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .difficulty button.active {
+            background: #bfa76a;
+            color: black;
+            border-color: #8c7846;
+            box-shadow: 0 0 10px rgba(191,167,106,0.4);
+        }
+
+        /* RESULT TEXT */
         .result {
             margin-top: 20px;
             font-size: 24px;
@@ -76,41 +121,54 @@
         }
 
         .correct {
-            color: #4dff4d;
-            text-shadow: 0 0 10px #4dff4d;
+            color: #bfa76a;
+            text-shadow: 0 0 10px rgba(191,167,106,0.4);
         }
 
         .wrong {
             color: #ff4d4d;
-            text-shadow: 0 0 10px #ff4d4d;
+            text-shadow: 0 0 10px rgba(255,77,77,0.4);
         }
 
-        a {
-            color: #4db8ff;
+        a.back {
+            color: #bfa76a;
             text-decoration: none;
             font-size: 18px;
         }
 
-        a:hover {
+        a.back:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
 
-    <h1>Career Path Mode</h1>
-    <a href="index.html">← Back to Home</a>
+    <div class="logo">
+        <span class="logo-main">Career Path Mode</span>
+        <div class="logo-accent"></div>
+    </div>
 
-    <div class="career-box" id="careerDisplay">Loading career path...</div>
+    <h2>Guess the player from their career journey</h2>
+    <a class="back" href="index.html">← Back to Home</a>
+
+    <div class="difficulty">
+        <button class="btn" onclick="setDifficulty('easy')" id="easyBtn">Easy</button>
+        <button class="btn" onclick="setDifficulty('medium')" id="mediumBtn">Medium</button>
+        <button class="btn" onclick="setDifficulty('hard')" id="hardBtn">Hard</button>
+    </div>
+
+    <div class="career-box" id="careerDisplay">Loading...</div>
 
     <input id="guessInput" placeholder="Enter player name...">
     <br>
-    <button onclick="checkGuess()">Submit Guess</button>
+    <button class="btn gold-btn" onclick="checkGuess()">Submit Guess</button>
+    <button class="btn gold-btn" onclick="newPlayer()">New Player</button>
 
     <div class="result" id="resultText"></div>
 
     <script>
-        // TEMP SAMPLE DATA — we will replace this with your real database
+        /* SAMPLE DATA — replace with real database later */
         const players = [
             {
                 name: "Kevin Durant",
@@ -127,11 +185,34 @@
         ];
 
         let currentPlayer = null;
+        let difficulty = "easy";
+
+        function setDifficulty(level) {
+            difficulty = level;
+
+            document.getElementById("easyBtn").classList.remove("active");
+            document.getElementById("mediumBtn").classList.remove("active");
+            document.getElementById("hardBtn").classList.remove("active");
+
+            document.getElementById(level + "Btn").classList.add("active");
+
+            newPlayer();
+        }
 
         function newPlayer() {
             currentPlayer = players[Math.floor(Math.random() * players.length)];
-            document.getElementById("careerDisplay").innerHTML =
-                currentPlayer.teams.join(" → ");
+
+            let teams = [...currentPlayer.teams];
+
+            if (difficulty === "medium" && teams.length > 2) {
+                teams = [teams[0], "...", teams[teams.length - 1]];
+            }
+
+            if (difficulty === "hard") {
+                teams = ["???", "???", "???"];
+            }
+
+            document.getElementById("careerDisplay").innerHTML = teams.join(" → ");
             document.getElementById("resultText").innerHTML = "";
             document.getElementById("guessInput").value = "";
         }
@@ -147,11 +228,9 @@
                 document.getElementById("resultText").innerHTML =
                     `<span class="wrong">Incorrect. It was ${currentPlayer.name}.</span>`;
             }
-
-            setTimeout(newPlayer, 2000);
         }
 
-        newPlayer();
+        setDifficulty("easy");
     </script>
 
 </body>
