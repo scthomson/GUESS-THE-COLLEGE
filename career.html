@@ -43,6 +43,30 @@
             margin-top: 5px;
         }
 
+        /* TAB SELECTOR */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
+            margin-bottom: 20px;
+            gap: 30px;
+            font-size: 22px;
+        }
+
+        .tab {
+            cursor: pointer;
+            padding-bottom: 6px;
+            transition: 0.2s;
+            opacity: 0.6;
+        }
+
+        .tab.active {
+            opacity: 1;
+            color: #bfa76a;
+            border-bottom: 3px solid #bfa76a;
+            text-shadow: 0 0 10px rgba(191,167,106,0.4);
+        }
+
         /* MAIN BOX */
         .career-box {
             background: #1a1a1a;
@@ -95,24 +119,6 @@
             transform: scale(1.05);
         }
 
-        /* DIFFICULTY SELECTOR */
-        .difficulty {
-            margin-top: 20px;
-        }
-
-        .difficulty button {
-            background: #333;
-            color: white;
-            border: 1px solid #555;
-        }
-
-        .difficulty button.active {
-            background: #bfa76a;
-            color: black;
-            border-color: #8c7846;
-            box-shadow: 0 0 10px rgba(191,167,106,0.4);
-        }
-
         /* RESULT TEXT */
         .result {
             margin-top: 20px;
@@ -152,10 +158,10 @@
     <h2>Guess the player from their career journey</h2>
     <a class="back" href="index.html">← Back to Home</a>
 
-    <div class="difficulty">
-        <button class="btn" onclick="setDifficulty('easy')" id="easyBtn">Easy</button>
-        <button class="btn" onclick="setDifficulty('medium')" id="mediumBtn">Medium</button>
-        <button class="btn" onclick="setDifficulty('hard')" id="hardBtn">Hard</button>
+    <!-- TAB SELECTOR -->
+    <div class="tabs">
+        <div class="tab active" id="nbaTab" onclick="setSport('nba')">NBA</div>
+        <div class="tab" id="nflTab" onclick="setSport('nfl')">NFL</div>
     </div>
 
     <div class="career-box" id="careerDisplay">Loading...</div>
@@ -168,15 +174,11 @@
     <div class="result" id="resultText"></div>
 
     <script>
-        /* SAMPLE DATA — replace with real database later */
-        const players = [
+        /* SAMPLE DATA — replace with real databases later */
+        const nbaPlayers = [
             {
                 name: "Kevin Durant",
                 teams: ["Seattle SuperSonics", "Oklahoma City Thunder", "Golden State Warriors", "Brooklyn Nets", "Phoenix Suns"]
-            },
-            {
-                name: "Tom Brady",
-                teams: ["New England Patriots", "Tampa Bay Buccaneers"]
             },
             {
                 name: "Chris Paul",
@@ -184,35 +186,38 @@
             }
         ];
 
+        const nflPlayers = [
+            {
+                name: "Tom Brady",
+                teams: ["New England Patriots", "Tampa Bay Buccaneers"]
+            },
+            {
+                name: "Peyton Manning",
+                teams: ["Indianapolis Colts", "Denver Broncos"]
+            }
+        ];
+
+        let currentSport = "nba";
         let currentPlayer = null;
-        let difficulty = "easy";
 
-        function setDifficulty(level) {
-            difficulty = level;
+        function setSport(sport) {
+            currentSport = sport;
 
-            document.getElementById("easyBtn").classList.remove("active");
-            document.getElementById("mediumBtn").classList.remove("active");
-            document.getElementById("hardBtn").classList.remove("active");
+            document.getElementById("nbaTab").classList.remove("active");
+            document.getElementById("nflTab").classList.remove("active");
 
-            document.getElementById(level + "Btn").classList.add("active");
+            document.getElementById(sport + "Tab").classList.add("active");
 
             newPlayer();
         }
 
         function newPlayer() {
-            currentPlayer = players[Math.floor(Math.random() * players.length)];
+            const pool = currentSport === "nba" ? nbaPlayers : nflPlayers;
+            currentPlayer = pool[Math.floor(Math.random() * pool.length)];
 
-            let teams = [...currentPlayer.teams];
+            document.getElementById("careerDisplay").innerHTML =
+                currentPlayer.teams.join(" → ");
 
-            if (difficulty === "medium" && teams.length > 2) {
-                teams = [teams[0], "...", teams[teams.length - 1]];
-            }
-
-            if (difficulty === "hard") {
-                teams = ["???", "???", "???"];
-            }
-
-            document.getElementById("careerDisplay").innerHTML = teams.join(" → ");
             document.getElementById("resultText").innerHTML = "";
             document.getElementById("guessInput").value = "";
         }
@@ -230,7 +235,7 @@
             }
         }
 
-        setDifficulty("easy");
+        newPlayer();
     </script>
 
 </body>
