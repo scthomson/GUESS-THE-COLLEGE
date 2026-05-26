@@ -1,1 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stat Mystery Mode</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+  <div class="container">
+    <h1 class="title">Stat Mystery Mode</h1>
+
+    <div class="mode-selector">
+      <button id="nflBtn" class="active">NFL</button>
+    </div>
+
+    <div id="clueBox" class="clue-box">Press "New Player" to begin</div>
+
+    <input id="guessInput" class="guess-input" placeholder="Enter player name...">
+    <button id="submitGuess" class="submit-btn">Submit Guess</button>
+
+    <div id="result" class="result"></div>
+
+    <button id="newPlayer" class="new-btn">New Player</button>
+  </div>
+
+  <script src="statmystery.js"></script>
+</body>
+</html>
