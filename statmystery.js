@@ -202,9 +202,14 @@ const submitGuessBtn = document.getElementById("submitGuess");
 function newPlayer() {
   currentPlayer = statMysteryNFL[Math.floor(Math.random() * statMysteryNFL.length)];
   currentClueIndex = 0;
-  clueBox.textContent = currentPlayer.clues[currentClueIndex];
+  clueList.innerHTML = ""; // clear old clues
   result.textContent = "";
   guessInput.value = "";
+
+  // show first clue
+  const li = document.createElement("li");
+  li.textContent = currentPlayer.clues[currentClueIndex];
+  clueList.appendChild(li);
 }
 
 function submitGuess() {
