@@ -244,22 +244,7 @@ function submitGuess() {
   }
 }
 
-  if (guess === answer) {
-    result.textContent = "Correct! " + currentPlayer.name;
-    result.style.color = "lime";
-  } else {
-    result.textContent = "Incorrect";
-    result.style.color = "red";
-
-    if (currentClueIndex < currentPlayer.clues.length - 1) {
-      currentClueIndex++;
-      clueBox.textContent = currentPlayer.clues[currentClueIndex];
-    } else {
-      clueBox.textContent = "Out of clues!";
-      result.textContent = "Answer: " + currentPlayer.name;
-    }
-  }
-}
+ 
 
 newPlayerBtn.addEventListener("click", newPlayer);
 submitGuessBtn.addEventListener("click", submitGuess);
