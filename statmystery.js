@@ -3,6 +3,8 @@
 // ===============================
 
 const clueList = document.getElementById("clueList");
+
+const statMysteryNFL = [
   {
     name: "Patrick Mahomes",
     clues: [
