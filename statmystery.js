@@ -2,7 +2,7 @@
 // NFL STAT MYSTERY PLAYER POOL
 // ===============================
 
-const statMysteryNFL = [
+const clueList = document.getElementById("clueList");
   {
     name: "Patrick Mahomes",
     clues: [
