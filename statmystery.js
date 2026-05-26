@@ -219,6 +219,32 @@ function submitGuess() {
   if (guess === answer) {
     result.textContent = "Correct! " + currentPlayer.name;
     result.style.color = "lime";
+    return;
+  }
+
+  // wrong guess
+  result.textContent = "Incorrect";
+  result.style.color = "red";
+
+  // reveal next clue if available
+  if (currentClueIndex < currentPlayer.clues.length - 1) {
+    currentClueIndex++;
+    const li = document.createElement("li");
+    li.textContent = currentPlayer.clues[currentClueIndex];
+    clueList.appendChild(li);
+  } else {
+    // no clues left
+    const li = document.createElement("li");
+    li.textContent = "No more clues!";
+    clueList.appendChild(li);
+
+    result.textContent = "Answer: " + currentPlayer.name;
+  }
+}
+
+  if (guess === answer) {
+    result.textContent = "Correct! " + currentPlayer.name;
+    result.style.color = "lime";
   } else {
     result.textContent = "Incorrect";
     result.style.color = "red";
