@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mini Sports Crossword</title>
+
+<style>
+  body {
+    background: #0d0d0d;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+
+  h1 {
+    color: gold;
+    margin-bottom: 20px;
+  }
+
+  .crossword {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(5, 50px);
+    gap: 3px;
+    margin: 20px auto;
+  }
+
+  .cell {
+    width: 50px;
+    height: 50px;
+    background: #222;
+    border: 2px solid #444;
+    font-size: 28px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 50px;
+    cursor: text;
+  }
+
+  .cell:focus {
+    outline: 2px solid gold;
+  }
+
+  .block {
+    background: black;
+    border: 2px solid #000;
+  }
+
+  .clues {
+    margin-top: 30px;
+    text-align: left;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .clues h2 {
+    color: gold;
+    margin-bottom: 10px;
+  }
+
+  .check-btn {
+    margin-top: 25px;
+    padding: 12px 20px;
+    background: gold;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .check-btn:hover {
+    background: #e6c200;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Mini Sports Crossword</h1>
+
+<div class="crossword" id="grid"></div>
+
+<div class="clues">
+  <h2>Across</h2>
+  <p><b>1.</b> Lakers legend (4)</p>
+  <p><b>3.</b> NFL position: throws the ball (2)</p>
+
+  <h2>Down</h2>
+  <p><b>1.</b> Chicago NBA team (3)</p>
+  <p><b>2.</b> Brady’s team for 20 years (3)</p>
+</div>
+
+<button class="check-btn" onclick="checkPuzzle()">Check Answers</button>
+
+<script>
+/*
+  Crossword layout:
+  Use letters for fillable cells, # for blocks.
+
+  Grid (5x5):
+  K O B E #
+  Q B # B U
+  B U L L S
+  P A T # S
+  # # # # #
+*/
+
+const layout = [
+  "K", "O", "B", "E", "#",
+  "Q", "B", "#", "B", "U",
+  "B", "U", "L", "L", "S",
+  "P", "A", "T", "#", "S",
+  "#", "#", "#", "#", "#"
+];
+
+const grid = document.getElementById("grid");
+
+// Build grid
+layout.forEach((char, i) => {
+  const cell = document.createElement("input");
+
+  if (char === "#") {
+    cell.className = "cell block";
+    cell.disabled = true;
+  } else {
+    cell.className = "cell";
+    cell.maxLength = 1;
+    cell.dataset.answer = char;
+  }
+
+  grid.appendChild(cell);
+});
+
+// Check correctness
+function checkPuzzle() {
+  const cells = document.querySelectorAll(".cell");
+
+  cells.forEach(cell => {
+    if (cell.classList.contains("block")) return;
+
+    const correct = cell.dataset.answer;
+    const guess = cell.value.toUpperCase();
+
+    if (guess === correct) {
+      cell.style.background = "#1e3d1e"; // greenish
+      cell.style.borderColor = "lime";
+    } else {
+      cell.style.background = "#3d1e1e"; // reddish
+      cell.style.borderColor = "red";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
