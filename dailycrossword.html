@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Daily Mini Sports Crossword</title>
+
+<style>
+  body {
+    background: #0d0d0d;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+
+  h1 {
+    color: gold;
+    margin-bottom: 10px;
+  }
+
+  .date-label {
+    opacity: 0.7;
+    margin-bottom: 20px;
+  }
+
+  .crossword {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(5, 50px);
+    gap: 3px;
+    margin: 20px auto;
+  }
+
+  .cell {
+    width: 50px;
+    height: 50px;
+    background: #222;
+    border: 2px solid #444;
+    font-size: 28px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 50px;
+    cursor: text;
+  }
+
+  .cell:focus {
+    outline: 2px solid gold;
+  }
+
+  .block {
+    background: black;
+    border: 2px solid #000;
+  }
+
+  .clues {
+    margin-top: 30px;
+    text-align: left;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .clues h2 {
+    color: gold;
+    margin-bottom: 10px;
+  }
+
+  .check-btn {
+    margin-top: 25px;
+    padding: 12px 20px;
+    background: gold;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .check-btn:hover {
+    background: #e6c200;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Daily Mini Sports Crossword</h1>
+<div class="date-label" id="dateLabel"></div>
+
+<div class="crossword" id="grid"></div>
+
+<div class="clues" id="clueBox"></div>
+
+<button class="check-btn" onclick="checkPuzzle()">Check Answers</button>
+
+<script>
+/*
+  DAILY CROSSWORD SYSTEM
+  ----------------------
+  - 30 puzzles
+  - Each puzzle has:
+      layout: 25 characters (# = block)
+      across: array of clues
+      down: array of clues
+  - Puzzle of the day = dayOfYear % 30
+*/
+
+function dayOfYear() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now - start;
+  return Math.floor(diff / 86400000);
+}
+
+document.getElementById("dateLabel").textContent =
+  "Puzzle for " + new Date().toDateString();
+
+// ===============================
+// 30 DAILY CROSSWORDS
+// ===============================
+
+const puzzles = [
+  {
+    layout: [
+      "K","O","B","E","#",
+      "Q","B","#","B","U",
+      "B","U","L","L","S",
+      "P","A","T","#","S",
+      "#","#","#","#","#"
+    ],
+    across: [
+      "1. Lakers legend (4)",
+      "3. NFL position: throws the ball (2)"
+    ],
+    down: [
+      "1. Chicago NBA team (5)",
+      "2. Brady’s longtime team (3)"
+    ]
+  },
+
+  // --- PUZZLE 2 ---
+  {
+    layout: [
+      "C","U","R","R","Y",
+      "#","A","#","R","#",
+      "H","E","A","T","#",
+      "M","#","V","#","P",
+      "#","#","#","#","#"
+    ],
+    across: [
+      "1. Warriors superstar (5)",
+      "3. Miami NBA team (4)"
+    ],
+    down: [
+      "1. Award: Most Valuable ___ (3)",
+      "2. Basketball stat: ___ (3)"
+    ]
+  },
+
+  // --- PUZZLE 3 ---
+  {
+    layout: [
+      "B","R","A","D","Y",
+      "R","#","I","#","N",
+      "O","T","B","U","C",
+      "N","#","E","#","S",
+      "#","#","#","#","#"
+    ],
+    across: [
+      "1. QB with 7 rings (5)",
+      "3. Tampa Bay team (3)"
+    ],
+    down: [
+      "1. NFL conference: ___ (3)",
+      "2. Football position: RB, WR, ___ (2)"
+    ]
+  },
+
+  // (I will generate the remaining 27 puzzles after you confirm the style)
+];
+
+// ===============================
+// LOAD TODAY'S PUZZLE
+// ===============================
+
+const index = dayOfYear() % puzzles.length;
+const puzzle = puzzles[index];
+
+const grid = document.getElementById("grid");
+const clueBox = document.getElementById("clueBox");
+
+// Build grid
+puzzle.layout.forEach(char => {
+  const cell = document.createElement("input");
+
+  if (char === "#") {
+    cell.className = "cell block";
+    cell.disabled = true;
+  } else {
+    cell.className = "cell";
+    cell.maxLength = 1;
+    cell.dataset.answer = char;
+  }
+
+  grid.appendChild(cell);
+});
+
+// Load clues
+clueBox.innerHTML = `
+  <h2>Across</h2>
+  ${puzzle.across.map(c => `<p>${c}</p>`).join("")}
+  <h2>Down</h2>
+  ${puzzle.down.map(c => `<p>${c}</p>`).join("")}
+`;
+
+// Check correctness
+function checkPuzzle() {
+  const cells = document.querySelectorAll(".cell");
+
+  cells.forEach(cell => {
+    if (cell.classList.contains("block")) return;
+
+    const correct = cell.dataset.answer;
+    const guess = cell.value.toUpperCase();
+
+    if (guess === correct) {
+      cell.style.background = "#1e3d1e";
+      cell.style.borderColor = "lime";
+    } else {
+      cell.style.background = "#3d1e1e";
+      cell.style.borderColor = "red";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
